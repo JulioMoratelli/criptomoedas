@@ -77,6 +77,12 @@ tdLabel span {
   color: #fff;
   transition: color 0.5s;
   align-items: center;
+  display: flex;
+}
+
+.link img {
+  margin-right: 10px;
+  margin-left: 50px;
 }
 
 .link:hover {
