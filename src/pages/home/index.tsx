@@ -1,26 +1,31 @@
 /* eslint-disable prefer-const */
 import { BiSearch } from 'react-icons/bi'
 import styles from './home.module.css'
-import { Link } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { FormEvent, useEffect, useState } from 'react'
 
 //https://coinlib.io/api/v1/coinlist?key=b402ee8fd0080fa2
 
 interface CoinProps {
+  id: string;
   name: string;
   image: string;
   price_change_percentage_24h: string;
   current_price: string;
   symbol: string;
   market_cap_change_percentage_24h: string;
-  market_cap_change_24h: string;
+  market_cap: string;
   formatedPrice: string;
   formatedMarket: string;
+  formatedSymbol: string;
 }
 
 
 export function Home() {
   const [coins, setCoins] = useState<CoinProps[]>([])
+  const [inputValue, setInputValue] = useState("")
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     async function getData() {
@@ -39,8 +44,9 @@ export function Home() {
             const formated = {
               ...item,
               price_change_percentage_24h: item.price_change_percentage_24h,
-              formatedPrice: price.format(Number(item.price_change_percentage_24h)),
-              formatedMarket: price.format(Number(item.market_cap_change_24h)),
+              formatedPrice: price.format(Number(item.current_price)),
+              formatedMarket: price.format(Number(item.market_cap)),
+              formatedSymbol: item.symbol.toUpperCase(),
             }
 
             return formated;
@@ -54,10 +60,24 @@ export function Home() {
   }, [])
 
 
+  function handleSearch(e: FormEvent) {
+    e.preventDefault();
+
+    if (inputValue === "") return;
+
+    navigate(`/detail/${inputValue}`)
+  }
+
+
   return (
     <main className={styles.container}>
-      <form action="" className={styles.form}>
-        <input type="text" placeholder='Digite o simbolo da moeda: BTC...' />
+      <form action="" className={styles.form} onSubmit={handleSearch}>
+        <input
+          type="text"
+          placeholder='Digite o simbolo da moeda: BTC...'
+          value={inputValue}
+          onChange={(e) => setInputValue(e.target.value)}
+        />
 
         <button type='submit'>
           <BiSearch size={30} color='#fff' />
@@ -79,9 +99,9 @@ export function Home() {
           (
             <tr key={coin.name} className={styles.tr}>
               <td className={styles.tdLabel} data-label="Moeda">
-                <Link className={styles.link} to="/detail/btc">
+                <Link className={styles.link} to={`/detail/${coin.id}`}>
                   <img src={coin.image} width='30px' height='30px' alt="" />
-                  <span>{coin.name}</span> | {coin.symbol}
+                  <span>{coin.name}</span> | {coin.formatedSymbol}
                 </Link>
               </td>
               <td className={styles.tdLabel} data-label="Mercado">
