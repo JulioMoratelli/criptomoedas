@@ -1,0 +1,46 @@
+.container {
+  padding: 0 14px;
+  color: #fff;
+}
+
+.divImg {
+  width: 100%;
+  justify-content: center;
+  display: flex;
+  transition: all 5.0s;
+}
+
+.divImg img:hover {
+  transform: scale(1.08);
+}
+
+.center {
+  text-align: center;
+  margin-bottom: 14px;
+}
+
+.content {
+  max-width: 420px;
+  background-color: #0f0f0f;
+  margin: 24px auto;
+  padding: 24px;
+  border-radius: 8px;
+}
+
+.content p {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.content p:not(:last-of-type) {
+  margin-bottom: 16px;
+}
+
+.profit {
+  color: #12f984;
+}
+
+.loss {
+  color: #f91257;
+}
