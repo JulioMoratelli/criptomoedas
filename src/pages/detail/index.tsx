@@ -15,12 +15,12 @@ interface CoinProp {
   high_24h: string;
   low_24h: string;
   formatedPrice: string;
-  market_cap_change_percentage_24h: string;
+  market_cap_change_percentage_24h: number;
   formatedMarket: string;
   formatedLowPrice: string;
   formatedHighPrice: string;
   formatedMarketcap: string;
-  error?: string;
+  errors?: string;
 }
 
 
@@ -30,17 +30,14 @@ export function Detail() {
   const [detail, setDetail] = useState<CoinProp>();
   const [loading, setLoading] = useState(true);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     function getData() {
       fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=brl&ids=${cripto}&order=market_cap_desc&per_page=100&page=1&sparkline=false&locale=pt`)
         .then(response => response.json())
         .then((data: CoinProp[]) => {
-
-          if (data.error) {
-            return <NotFound />
-          }
-
-          const newData = data[0]
+          const newData = data[0];
 
           let price = Intl.NumberFormat("pt-BR", {
             style: "currency",
@@ -53,6 +50,10 @@ export function Detail() {
             formatedLowPrice: price.format(Number(newData.low_24h)),
             formatedMarketcap: price.format(Number(newData.market_cap)),
             formatedHighPrice: price.format(Number(newData.high_24h))
+          }
+
+          if (newData.errors) {
+            navigate("/*")
           }
 
           setDetail(resultData);
@@ -92,7 +93,7 @@ export function Detail() {
         <p>
           <strong>Variação 24h: </strong>
           <span className={Number(detail?.market_cap_change_percentage_24h) >= 0 ? styles.profit : styles.loss}>
-            {detail?.formatedMarket}
+            {detail?.market_cap_change_percentage_24h}
           </span>
         </p>
         <p>
