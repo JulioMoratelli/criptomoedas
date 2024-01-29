@@ -20,7 +20,6 @@ interface CoinProp {
   formatedLowPrice: string;
   formatedHighPrice: string;
   formatedMarketcap: string;
-  errors?: string;
 }
 
 
@@ -37,7 +36,9 @@ export function Detail() {
       fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=brl&ids=${cripto}&order=market_cap_desc&per_page=100&page=1&sparkline=false&locale=pt`)
         .then(response => response.json())
         .then((data: CoinProp[]) => {
+
           const newData = data[0];
+
 
           let price = Intl.NumberFormat("pt-BR", {
             style: "currency",
@@ -52,11 +53,11 @@ export function Detail() {
             formatedHighPrice: price.format(Number(newData.high_24h))
           }
 
-          if (newData.errors) {
-            navigate("/*")
-          }
-
           setDetail(resultData);
+          setLoading(false);
+        })
+        .catch(error => {
+          navigate("/*")
           setLoading(false);
         })
 

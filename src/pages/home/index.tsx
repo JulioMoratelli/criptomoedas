@@ -74,9 +74,9 @@ export function Home() {
       <form action="" className={styles.form} onSubmit={handleSearch}>
         <input
           type="text"
-          placeholder='Digite o simbolo da moeda: BTC...'
+          placeholder='Digite o simbolo da moeda: bitcoin...'
           value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
+          onChange={(e) => setInputValue(e.target.value.toLocaleLowerCase())}
         />
 
         <button type='submit'>
