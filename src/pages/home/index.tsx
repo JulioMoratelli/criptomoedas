@@ -21,8 +21,10 @@ interface CoinProps {
 }
 
 
+
+
 export function Home() {
-  const data = [
+  const dataCoins = [
     {
       "id": "bitcoin",
       "symbol": "btc",
@@ -2910,42 +2912,47 @@ export function Home() {
   const [inputValue, setInputValue] = useState("")
   const navigate = useNavigate();
 
+  useEffect(() => {
+    async function getData() {
+      fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=brl&order=market_cap_desc&per_page=100&page=1&sparkline=false&locale=pt')
+        .then(response => response.json())
+        .then((data) => {
+          let dataCoins = data.slice(0, 15)
 
-  // useEffect(() => {
-  //   async function getData() {
-  //     fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=brl&order=market_cap_desc&per_page=100&page=1&sparkline=false&locale=pt')
-  //       .then(response => response.json())
-  //       .then((data) => {
-  //         let dataCoins = data.slice(0, 15)
-
-  //         let price = Intl.NumberFormat("pt-BR", {
-  //           style: "currency",
-  //           currency: "BRL"
-  //         })
+          let price = Intl.NumberFormat("pt-BR", {
+            style: "currency",
+            currency: "BRL"
+          })
 
 
-  //         const formatResult = dataCoins.map((item: CoinProps) => {
-  //           const formated = {
-  //             ...item,
-  //             price_change_percentage_24h: item.price_change_percentage_24h,
-  //             formatedPrice: price.format(Number(item.current_price)),
-  //             formatedMarket: price.format(Number(item.market_cap)),
-  //             formatedSymbol: item.symbol.toUpperCase(),
-  //           }
+          const formatResult = dataCoins.map((item: CoinProps) => {
+            const formated = {
+              ...item,
+              price_change_percentage_24h: item.price_change_percentage_24h,
+              formatedPrice: price.format(Number(item.current_price)),
+              formatedMarket: price.format(Number(item.market_cap)),
+              formatedSymbol: item.symbol.toUpperCase(),
+            }
 
-  //           return formated;
-  //         })
+            return formated;
+          })
 
-  //         setCoins(formatResult);
-  //       })
-  //   }
+          setCoins(formatResult);
+        })
+    }
 
-  //   getData();
-  // }, [])
+    getData();
+  }, [])
 
-  function searchSequence() {
-
-  }
+  useEffect(() =>{
+    if(coins.length > 0){
+      const filteredData = coins.filter(coin => 
+        coin.name.toLocaleLowerCase().includes(inputValue.toLocaleLowerCase()) ||
+        coin.symbol.toLocaleLowerCase().includes(inputValue.toLocaleLowerCase())
+      );
+      setDataSearch(filteredData);
+    }
+  }, [inputValue, coins])
 
 
   function handleSearch(e: FormEvent) {
@@ -2973,7 +2980,7 @@ export function Home() {
 
       <table>
         <thead>
-          <tr>
+        <tr>
             <th scope='col'>Moeda</th>
             <th scope='col'>Valor Mercado</th>
             <th scope='col'>Preço</th>
@@ -2982,7 +2989,7 @@ export function Home() {
         </thead>
 
         <tbody>
-          {coins.map(coin =>
+          {dataSearch.map(coin =>
           (
             <tr key={coin.name} className={styles.tr}>
               <td className={styles.tdLabel} data-label="Moeda">
